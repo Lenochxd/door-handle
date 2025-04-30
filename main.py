@@ -6,9 +6,9 @@ from machine import Pin
 # --- CONFIG ---
 TOUCH_PIN = 14       # GPIO14 = D5 on NodeMCU
 LED_PIN = 12         # GPIO12 = D6
-WEBHOOK_URL = 'https://discord.com/api/webhooks/your_webhook_url_here'
 WIFI_SSID = 'YourWiFiSSID'
 WIFI_PASSWORD = 'YourWiFiPassword'
+WEBHOOK_URL = 'http://192.168.3.8:5050/door'
 
 # --- SETUP ---
 touch = Pin(TOUCH_PIN, Pin.IN)
@@ -31,9 +31,13 @@ def send_webhook():
         print("Wi-Fi not connected, reconnecting...")
         connect_wifi()
 
-    payload = {"content": "🚪 Door touched! <@390265556357611521>"}
+    payload = {"touched": True}
     try:
-        r = urequests.post(WEBHOOK_URL, json=payload)
+        r = urequests.post(WEBHOOK_URL, json=payload, headers={"Content-Type": "application/json"})
+        if r.status_code == 200:
+            print("Webhook sent successfully!")
+        else:
+            print("Failed to send webhook:", r.status_code, r.text)
         r.close()
         print("Webhook sent.")
     except Exception as e:
