@@ -27,6 +27,10 @@ def connect_wifi():
 
 # --- SEND DISCORD WEBHOOK ---
 def send_webhook():
+    if not network.WLAN(network.STA_IF).isconnected():
+        print("Wi-Fi not connected, reconnecting...")
+        connect_wifi()
+
     payload = {"content": "🚪 Door touched! <@390265556357611521>"}
     try:
         r = urequests.post(WEBHOOK_URL, json=payload)
