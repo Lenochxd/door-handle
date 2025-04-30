@@ -43,13 +43,21 @@ def send_webhook():
     except Exception as e:
         print("Failed to send webhook:", e)
 
+def wait_for_stable_touch():
+    count = 0
+    for _ in range(10):
+        if touch.value() == 1:
+            count += 1
+        time.sleep(0.01)
+    return count >= 8  # 80% stable touch
+
 # --- MAIN LOOP ---
 connect_wifi()
 last_touch_time = 0
 cooldown = 2  # seconds
 
 while True:
-    if touch.value() == 1:
+    if touch.value() == 1 and wait_for_stable_touch():
         now = time.time()
         if now - last_touch_time > cooldown:
             print("Touch detected!")
