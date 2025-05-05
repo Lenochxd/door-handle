@@ -66,4 +66,4 @@ while True:
             time.sleep(1)
             led.value(0)
             last_touch_time = now
-    time.sleep(0.1)
+    time.sleep(0.07)
